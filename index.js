@@ -6,16 +6,14 @@ const cors = require("cors");
 const users_routes = require("./routes/userRoutes");
 
 const app = express();
-const PORT = 3000;
+const PORT = 6000;
 const DB = process.env.DB;
 
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.use("/api/users", users_routes);
 
-// 404 handler
 app.use((req, res) => {
   return res.status(404).json({
     status: 404,
@@ -23,7 +21,6 @@ app.use((req, res) => {
   });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
