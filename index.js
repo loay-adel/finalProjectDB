@@ -12,10 +12,24 @@ const DB = process.env.DB;
 app.use(cors());
 app.use(express.json());
 
+// Routes
 app.use("/api/users", users_routes);
 
+// 404 handler
 app.use((req, res) => {
-  return res.status(200).json("it is ok");
+  return res.status(404).json({
+    status: 404,
+    message: "Route not found",
+  });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    status: 500,
+    data: { data: null, message: "Internal server error" },
+  });
 });
 
 async function main() {
@@ -29,5 +43,7 @@ async function main() {
     console.error("Database connection error:", err);
   }
 }
+
+main();
 
 module.exports = app;
