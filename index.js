@@ -1,11 +1,9 @@
 const express = require("express");
+require("dotenv").config();
 const mongoose = require("mongoose");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
+
 const users_routes = require("./routes/userRoutes");
-const product_routes = require("./routes/productRoutes");
-const errorHandling = require("./middlewares/errorHandling");
-require("dotenv").config();
 
 const app = express();
 const PORT = 6000;
@@ -13,10 +11,8 @@ const DB = process.env.DB;
 
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 
 app.use("/api/users", users_routes);
-app.use("/api/product", product_routes);
 
 app.use((req, res) => {
   return res.status(404).json({
@@ -25,8 +21,13 @@ app.use((req, res) => {
   });
 });
 
-
-app.use(errorHandling);
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    status: 500,
+    data: { data: null, message: "Internal server error" },
+  });
+});
 
 async function main() {
   try {
